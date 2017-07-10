@@ -50,9 +50,20 @@ public class GameWindow extends JFrame{
                 switch (e.getKeyCode()){
                     case KeyEvent.VK_RIGHT:
                         playerX += 5;
-
-
                         break;
+
+                    case KeyEvent.VK_LEFT:
+                        playerX -=5;
+                        break;
+
+                    case KeyEvent.VK_DOWN:
+                        playerY +=5;
+                        break;
+
+                    case KeyEvent.VK_UP:
+                        playerY -=5;
+                        break;
+
 
                     default:
                         break;
