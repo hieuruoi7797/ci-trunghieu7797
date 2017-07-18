@@ -1,10 +1,8 @@
 package Game.player;
 
 import Game.Utils;
-import Game.bases.Contraints;
-import Game.bases.FrameCounter;
-import Game.bases.ImageRenderer;
-import Game.bases.Vector2D;
+import Game.bases.*;
+import Game.inputs.InputManager;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -13,18 +11,45 @@ import java.util.ArrayList;
 /**
  * Created by Admin on 7/11/2017.
  */
-public class Player {
+public class Player extends GameObject {
 
-    public Vector2D position;
-    public ImageRenderer imageRenderer;
     Contraints contraints;
     FrameCounter coolDownCounter;
     boolean spellDisabled;
-
+    Vector2D velocity;
+    InputManager inputManager ;
     public Player(){
-        this.position = new Vector2D();
+        this.velocity = new Vector2D();
         this.coolDownCounter = new FrameCounter(17);//17 frames = 300 miliseconds to cool down
-        this.imageRenderer = new ImageRenderer(Utils.loadAssetImage("players/straight/0.png"));
+        this.renderer = new ImageRenderer(Utils.loadAssetImage("players/straight/0.png"));
+
+    }
+
+    @Override
+    public void run(){
+        move();
+        castSpell();
+        coolDown();
+    }
+
+    private void move() {
+        this.velocity.set(0, 0);
+
+        if (inputManager.leftPressed)
+            this.velocity.x -= 10;
+        if (inputManager.rightPressed)
+            this.velocity.x += 10;
+        if (inputManager.upPressed)
+            this.velocity.y -= 10;
+        if (inputManager.downPressed)
+            this.velocity.y += 10;
+        this.position.addUp(velocity);
+        this.contraints.make(this.position);
+    }
+
+
+    public void setInputManager(InputManager inputManager){
+        this.inputManager = inputManager;
 
     }
 
@@ -33,23 +58,17 @@ public class Player {
        this.position.addUp(dx, dy);
        contraints.make(this.position);
     }
-
-    public void render(Graphics2D g2d){
-        imageRenderer.render(g2d, this.position);
-    }
     //setter
     public void setContraints(Contraints contraints){
         this.contraints = contraints;
     }
 
-    public void castSpell(ArrayList<PlayerSpell> playerSpells) {
+    public void castSpell() {
         //cast spell
-        if (!spellDisabled) {
+        if (inputManager.xPressed) {
             PlayerSpell playerSpell = new PlayerSpell();
             playerSpell.position.set(this.position.add(0, -20));
-            playerSpells.add(playerSpell);
-            spellDisabled = true;
-
+            GameObject.add(playerSpell);
         }
     }
 

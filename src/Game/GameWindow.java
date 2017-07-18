@@ -1,6 +1,9 @@
 package Game;
 
 import Game.bases.Contraints;
+import Game.bases.GameObject;
+import Game.enemies.EnemySpawner;
+import Game.inputs.InputManager;
 import Game.player.Player;
 import Game.player.PlayerSpell;
 
@@ -11,6 +14,7 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.security.Key;
 import java.util.ArrayList;
 
 /**
@@ -19,106 +23,52 @@ import java.util.ArrayList;
 public class GameWindow extends JFrame{
     private BufferedImage background;
 
-    boolean rightPressed;
-    boolean leftPressed;
-    boolean upPressed;
-    boolean downPressed;
-    boolean xPressed;
-    int backgroundY;
-
-    Player player = new Player();
-    ArrayList<PlayerSpell> playerSpells = new ArrayList<>();
-
     BufferedImage backBufferImage;
     Graphics2D backBufferGraphics2D;
+    InputManager inputManager = new InputManager() ;
+
+
+    int backgroundY;
+
+//    Player player = new Player();
+//    ArrayList<PlayerSpell> playerSpells = new ArrayList<>();
+
 
 
 
     public GameWindow(){
         setupWindow();
         loadImages();
-
-        Contraints contraints = new Contraints(0, this.getHeight(),0, background.getWidth());
-        player.setContraints(contraints);
-        player.position.set(background.getWidth()/2,this.getHeight() - 50) ;
+        addPlayer();
+        addEnemySpawner();
+        addBackGround();
 
         backgroundY = this.getHeight()-background.getHeight();
-
         backBufferImage = new BufferedImage(this.getWidth(),this.getHeight(), BufferedImage.TYPE_INT_ARGB);
         backBufferGraphics2D = (Graphics2D) backBufferImage.getGraphics();
-        setupInputs();
 
         this.setVisible(true);
             }
 
-    private void setupInputs() {
-        this.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                switch (e.getKeyCode()){
-                    case KeyEvent.VK_RIGHT:
-                        rightPressed = true;
-                        break;
-
-                    case KeyEvent.VK_LEFT:
-                        leftPressed = true;
-
-                        break;
-
-                    case KeyEvent.VK_DOWN:
-                        downPressed = true;
-                        break;
-
-                    case KeyEvent.VK_UP:
-                        upPressed = true;
-                        break;
-
-                    case KeyEvent.VK_X:
-                        xPressed = true;
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_RIGHT:
-                        rightPressed = false;
-                        break;
-                    case KeyEvent.VK_LEFT:
-                        leftPressed = false;
-                        break;
-                    case KeyEvent.VK_UP:
-                        upPressed = false;
-                        break;
-                    case KeyEvent.VK_DOWN:
-                        downPressed = false;
-                        break;
-                    case KeyEvent.VK_X:
-                        xPressed = false;
-                        break;
+    private void addBackGround() {
+    }
 
 
+    private void addEnemySpawner() {
+        GameObject.add(new EnemySpawner());
+    }
 
-                    default:
-                        break;
-
-
-                }
-            }
-        });
+    private void addPlayer() {
+        Player player = new Player();
+        player.setInputManager(inputManager);
+        player.setContraints(new Contraints(20, this.getHeight(), 0 ,background.getWidth()));
+        player.position.set(background.getWidth()/2, this.getHeight() - 50);
+        GameObject.add(player);
 
     }
 
-    long lastUpdateTime;
 
+    long lastUpdateTime;
     public void loop(){
         while(true){
 
@@ -133,49 +83,20 @@ public class GameWindow extends JFrame{
 
             }}
 
+
     private void run(){
         if (backgroundY <=0)
-            backgroundY += 5;
+            backgroundY ++;
 
-        int dx = 0;
-        int dy = 0;
-
-
-        if (rightPressed){
-            dx += 3;
-        }
-        if (leftPressed){
-            dx -= 3;
-        }
-        if (upPressed){
-            dy -= 3;
-        }
-        if (downPressed){
-            dy +=3;
-        }
-        if (xPressed){
-           player.castSpell(playerSpells);
-        }
-
-
-
-        player.move(dx, dy);
-        player.coolDown();
-        for (PlayerSpell playerSpell: playerSpells){
-            playerSpell.move();
-        }
-
+        GameObject.runall();
     }
     private void render() {
         backBufferGraphics2D.setColor(Color.BLACK);
         backBufferGraphics2D.fillRect(0,0,this.getWidth(),this.getHeight());
 
         backBufferGraphics2D.drawImage(background,0, backgroundY,null);
-        player.render(backBufferGraphics2D);
 
-        for (PlayerSpell playerSpell : playerSpells){
-            playerSpell.render(backBufferGraphics2D);
-        }
+        GameObject.renderall(backBufferGraphics2D);
 
         Graphics2D g2d= (Graphics2D)this.getGraphics();
         g2d.drawImage(backBufferImage, 0, 0, null);
@@ -192,13 +113,28 @@ public class GameWindow extends JFrame{
         this.setSize(600, 600);
         this.setResizable(false);
         this.setTitle("Game do hoi - cover by HieuRuoi");
-
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 System.exit(0);
                 super.windowClosing(e);
 
+            }
+        });
+        this.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                inputManager.keyPressed(e);
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                inputManager.keyReleased(e);
             }
         });
     }

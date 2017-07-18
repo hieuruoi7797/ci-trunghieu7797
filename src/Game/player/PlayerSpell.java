@@ -1,8 +1,10 @@
 package Game.player;
 
 import Game.Utils;
+import Game.bases.GameObject;
 import Game.bases.ImageRenderer;
 import Game.bases.Vector2D;
+import Game.inputs.InputManager;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -11,22 +13,19 @@ import java.util.Vector;
 /**
  * Created by Admin on 7/11/2017.
  */
-public class PlayerSpell {
-    public Vector2D position;
-    public ImageRenderer imageRenderer;
+public class PlayerSpell extends GameObject {
 
-    public PlayerSpell(){
+    public PlayerSpell() {
         position = new Vector2D();
-        this.imageRenderer = new ImageRenderer(Utils.loadAssetImage("player-spells/a/0.png"));
+        renderer = new ImageRenderer(Utils.loadAssetImage("player-spells/a/0.png"));
     }
 
-    public void move(){
+
+
+    public void run(){
         this.position.addUp(0, -10);
     }
-    public void render(Graphics2D g2d){
-        imageRenderer.render(g2d, this.position);
 
-    }
 
 
 }
