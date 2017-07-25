@@ -18,23 +18,25 @@ public class Player extends GameObject {
     boolean spellDisabled;
     Vector2D velocity;
     InputManager inputManager ;
+
+    public static Player instance;
+
     public Player(){
         this.velocity = new Vector2D();
         this.coolDownCounter = new FrameCounter(17);//17 frames = 300 miliseconds to cool down
         this.renderer = new ImageRenderer(Utils.loadAssetImage("players/straight/0.png"));
-
+        instance = this;
     }
 
     @Override
-    public void run(){
+    public void run(Vector2D parentPosition){
+        super.run(parentPosition);
         move();
         castSpell();
         coolDown();
     }
-
     private void move() {
         this.velocity.set(0, 0);
-
         if (inputManager.leftPressed)
             this.velocity.x -= 10;
         if (inputManager.rightPressed)
