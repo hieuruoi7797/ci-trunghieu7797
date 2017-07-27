@@ -31,7 +31,7 @@ public class Animation implements Renderer {
             changeIndex();
             frameCounter.reset();
         }
-        
+
         BufferedImage image = images.get(imageIndex);
         g.drawImage(image,(int) position.x-image.getWidth()/2,(int) position.y - image.getHeight()/2, null);
     }
