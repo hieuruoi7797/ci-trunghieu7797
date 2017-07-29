@@ -7,6 +7,8 @@ import game.enemies.EnemySpawner;
 import game.inputs.InputManager;
 import game.player.Player;
 import game.scenes.BackGround;
+import javafx.embed.swing.JFXPanel;
+import tklibs.AudioUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,6 +25,8 @@ public class GameWindow extends JFrame {
     Graphics2D backBufferGraphics2D;
     BackGround background;
     InputManager inputManager = new InputManager();
+    final JFXPanel fxPanel = new JFXPanel();
+
 
 
     int backgroundY;
@@ -40,6 +44,7 @@ public class GameWindow extends JFrame {
         backBufferImage = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_ARGB);
         backBufferGraphics2D = (Graphics2D) backBufferImage.getGraphics();
         this.setVisible(true);
+        AudioUtils.playMedia("assets/music/1.mp3");
     }
 
     private void addBackGround() {
