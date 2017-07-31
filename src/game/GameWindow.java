@@ -25,7 +25,7 @@ public class GameWindow extends JFrame {
     Graphics2D backBufferGraphics2D;
     BackGround background;
     InputManager inputManager = new InputManager();
-    final JFXPanel fxPanel = new JFXPanel();
+//    final JFXPanel fxPanel = new JFXPanel();
 
 
 
@@ -44,7 +44,7 @@ public class GameWindow extends JFrame {
         backBufferImage = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_ARGB);
         backBufferGraphics2D = (Graphics2D) backBufferImage.getGraphics();
         this.setVisible(true);
-        AudioUtils.playMedia("assets/music/1.mp3");
+//        AudioUtils.playMedia("assets/music/1.mp3");
     }
 
     private void addBackGround() {
@@ -54,10 +54,7 @@ public class GameWindow extends JFrame {
     }
 
     private void addEnemySpawner() {
-        Enemy enemy = new Enemy();
-        enemy.position.set(background.getWidth() / 2, 0);
-        GameObject.add(enemy);
-        GameObject.add(new EnemySpawner());
+      GameObject.add(new EnemySpawner());
     }
 
     private void addPlayer() {

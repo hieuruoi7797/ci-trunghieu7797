@@ -1,6 +1,7 @@
 package game.enemies;
 
 import game.Utils;
+import game.bases.Contraints;
 import game.bases.GameObject;
 import game.bases.renderers.ImageRenderer;
 import game.bases.Vector2D;
@@ -25,5 +26,8 @@ public class EnemyBullet extends GameObject {
             this.isActive = false;
         }
     }
+//    public void setContraints(Contraints contraints) {
+//        this.contraints = contraints;
+//    }
 
 }
